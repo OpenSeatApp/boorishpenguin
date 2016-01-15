@@ -38,6 +38,12 @@ passport.deserializeUser(function(obj, done) {
 });
 
 // When user logged in does a get req to auth/google/callback
+var extend = function(obj1, obj2) {
+  for (var key in obj2) {
+    obj1[key] = obj2[key];
+  }
+}
+
 passport.use(new GoogleStrategy({
   clientID: apikeys.googleOauth.clientID,
   clientSecret: apikeys.googleOauth.clientSecret,
@@ -47,6 +53,7 @@ passport.use(new GoogleStrategy({
   function(accessToken, refreshToken, profile, done) {
   	console.log('profile', profile); 
   	var queryObject = {};
+    queryObject.google_id = profile.id; 
   	queryObject.username = profile.emails[0].value;
   	queryObject.name_last = profile.name.familyName;
   	queryObject.name_first = profile.name.givenName;
@@ -54,9 +61,13 @@ passport.use(new GoogleStrategy({
   	queryObject.email = profile.emails[0].value;
   	queryObject.username = queryObject.email;
   	//TODO: not have username === email
-  	User.findOrCreate({where: queryObject}).spread(function(user, created) {
-  		return done(null, user);
-  	});
+  	User.findOrCreate({where: {google_id: profile.id}}).spread(function(user, created) {
+      // console.log('user', user);
+      // user.updateAttributes(queryObject).success(function() {
+        User.update(queryObject, { where: {google_id: profile.id} });
+    		return done(null, user); 
+      // })
+  	})
   }));
     // controllers.isUserInDb(profile.emails[0].value, function (inDb){
     //   // if the username/email is in the database run login
