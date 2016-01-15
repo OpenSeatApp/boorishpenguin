@@ -8,7 +8,6 @@ var voteController = require ('../controllers/voteController.js');
 var adminControllers = require ('../controllers/adminControllers.js');
 var passport = require('passport');
 
-
 module.exports = function(app, express) {
   app.get('/api/admin/', adminControllers.getPendingTeachers);
   app.put('/api/admin/:id', adminControllers.toggleTeacherAccess);
@@ -35,11 +34,12 @@ module.exports = function(app, express) {
   app.get('/api/users/:id', userControllers.oneUser);
   app.get('/api/users/getFullProfile/:id', userControllers.getFullProfile);
 
+
   app.post('/api/signup', userControllers.newUser);
 
-  app.get('/api/courses', courseControllers.allCourses);
+  app.get('/api/courses', ensureAuth, courseControllers.allCourses);
 
-  app.get('/api/tags', tagControllers.allTags);
+  app.get('/api/tags', ensureAuth, tagControllers.allTags);
 
   app.get('/api/loggedin', function(req, res) {
    res.send(req.isAuthenticated() ? req.user : '0');

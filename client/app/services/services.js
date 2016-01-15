@@ -6,6 +6,7 @@ angular.module('boorish.services', [])
   return {
     // add a question from /ask
     addQuestion: function(question, $rootScope) {
+
       return $http({
         method: 'POST',
         url: '/api/questions',
@@ -276,6 +277,7 @@ angular.module('boorish.services', [])
             if (users[i].email === user.google) {
               isUser = true;
               $rootScope.user = users[i];
+
               continue;
             }
           }

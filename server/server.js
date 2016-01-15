@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var googleAuth = require('./auth/googleAuth.js');
 var passport = require('passport');
 var cookieParser = require('cookie-parser');
+var cors = require('cors');
 var session = require('express-session');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var apikeys = require('./config/apikeys.js');
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/../client'));
 app.use(cookieParser());
+app.use(cors());
 app.use(session({ secret: 'hi' , resave: true, saveUninitialized: false}));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -55,3 +57,4 @@ passport.use(new GoogleStrategy({
       return done(null, user);
     });
   }));
+
