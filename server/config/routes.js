@@ -9,7 +9,6 @@ var adminControllers = require ('../controllers/adminControllers.js');
 var passport = require('passport');
 
 
-<<<<<<< HEAD
 module.exports = function(app, express) {
   app.get('/api/admin', adminControllers.getStaff);
   app.put('/api/admin/:id', adminControllers.toggleTeacherAccess);
@@ -35,6 +34,7 @@ module.exports = function(app, express) {
   app.get('/api/users', userControllers.allUsers);
   app.get('/api/users/:id', userControllers.oneUser);
   app.get('/api/users/getFullProfile/:id', userControllers.getFullProfile);
+
 
   app.post('/api/signup', userControllers.newUser);
 
