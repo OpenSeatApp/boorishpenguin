@@ -29,7 +29,25 @@ angular.module('Main', ['ui.router', 'ngMaterial', 'main.controller', 'boorish.q
         .primaryPalette('deep-purple')
         .accentPalette('blue-grey');
 
-  }).run(function () {
+  })
+
+  .factory('AttachTokens', function () {
+  // this is an $httpInterceptor
+  // its job is to stop all out going request
+  // then look in local storage and find the user's token
+  // then add it to the header so the server can validate the request
+  var attach = {
+    request: function (object) {
+      object.headers['Allow-Control-Allow-Headers'] = 'Content-Type';
+      object.headers['Allow-Control-Allow-Origin'] = '*';
+      object.headers['Allow-Control-Allow-Methods'] = '*';
+      return object;
+    }
+  };
+  return attach;
+})
+
+  .run(function () {
     console.log('running');
   });
  

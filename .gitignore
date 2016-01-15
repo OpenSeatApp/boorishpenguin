@@ -17,3 +17,6 @@ client/lib
 */.DS_Store
 .DS_Store
 client/app/.DS_Store
+
+### API KEYS ###
+./server/config/apikeys.js

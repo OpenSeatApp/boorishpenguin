@@ -8,36 +8,36 @@ var passport = require('passport');
 
 
 module.exports = function(app, express, ensureAuth) {
-  app.get('/api/questions', questionControllers.allQuestions);
-  app.post('/api/questions', questionControllers.newQuestion);
-  app.delete('/api/questions/:id', questionControllers.deleteQuestion);
+  app.get('/api/questions', ensureAuth, questionControllers.allQuestions);
+  app.post('/api/questions', ensureAuth, questionControllers.newQuestion);
+  app.delete('/api/questions/:id', ensureAuth, questionControllers.deleteQuestion);
 
-  app.get('/api/questions/:id', questionControllers.renderQuestion);
-  app.put('/api/questions/changeStatus/:id', questionControllers.toggleCloseQuestion);
-  app.put('/api/questions/markAsGood/:id' , questionControllers.markAsGoodQuestion);
-  app.put('/api/questions/vote/:id' , voteController.votePost);
+  app.get('/api/questions/:id', ensureAuth, questionControllers.renderQuestion);
+  app.put('/api/questions/changeStatus/:id', ensureAuth, questionControllers.toggleCloseQuestion);
+  app.put('/api/questions/markAsGood/:id' , ensureAuth, questionControllers.markAsGoodQuestion);
+  app.put('/api/questions/vote/:id' , ensureAuth, voteController.votePost);
 
-  app.post('/api/answers', answerControllers.newAnswer);
-  app.put('/api/answers/markAsCorrect/:id', answerControllers.markAsCorrectAnswer);
-  app.put('/api/answers/vote/:id' , voteController.votePost);
-  app.delete('/api/answers/:id', answerControllers.deleteAnswer);
+  app.post('/api/answers', ensureAuth, answerControllers.newAnswer);
+  app.put('/api/answers/markAsCorrect/:id', ensureAuth, answerControllers.markAsCorrectAnswer);
+  app.put('/api/answers/vote/:id' , ensureAuth, voteController.votePost);
+  app.delete('/api/answers/:id', ensureAuth, answerControllers.deleteAnswer);
 
-  app.get('/api/users', userControllers.allUsers);
-  app.get('/api/users/:id', userControllers.oneUser);
+  app.get('/api/users', ensureAuth, userControllers.allUsers);
+  app.get('/api/users/:id', ensureAuth, userControllers.oneUser);
   app.post('/api/signup', userControllers.newUser);
 
-  app.get('/api/courses', courseControllers.allCourses);
+  app.get('/api/courses', ensureAuth, courseControllers.allCourses);
 
-  app.get('/api/tags', tagControllers.allTags);
+  app.get('/api/tags', ensureAuth, tagControllers.allTags);
 
   // Client does get request to /auth/google on signin
   app.get('/auth/google',
-  passport.authenticate('google', { scope:  ['https://www.googleapis.com/auth/plus.login', 'https://www.googleapis.com/auth/plus.me', "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"] }));
+    passport.authenticate('google', { scope:  ['https://www.googleapis.com/auth/plus.login', 'https://www.googleapis.com/auth/plus.me', "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"] }));
 
   // Server.js:38 sends get req to /auth/google/callback after user has successfully logged into google
   app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
-  function(req, res) {
+    passport.authenticate('google', { failureRedirect: '/' }),
+      function(req, res) {
     // sends user to questions page after they successfully login
     res.redirect('/#/questions');
   });

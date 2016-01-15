@@ -5,7 +5,9 @@ angular.module('boorish.services', [])
 .factory('Questions', function($http, $location) {
   return {
     // add a question from /ask
-    addQuestion: function(question) {
+    addQuestion: function(question, $rootScope) {
+      console.log($rootScope.user);
+
       return $http({
         method: 'POST',
         url: '/api/questions',
@@ -189,7 +191,7 @@ angular.module('boorish.services', [])
   };
 })
 
-.factory('Auth', function ($http, $location, $window) {
+.factory('Auth', function ($http, $location, $window, $rootScope) {
   var user = {};
 
   return {
@@ -197,9 +199,11 @@ angular.module('boorish.services', [])
     setUser: function () {
       return $http({
         method: 'GET',
-        url: '/user'
+        url: '/auth/google'
       })
       .then(function (res) {
+        console.log('res', res);
+        console.log('json parsed data', JSON.parse(res.data));
         user.google = res.data.email || res.data.profile.emails[0].value;
 
         return $http({
@@ -210,27 +214,29 @@ angular.module('boorish.services', [])
           var users = res.data.results;
           var isUser = false;
           for (var i = 0; i < users.length; i++) {
+            console.log()
             if (users[i].email === user.google) {
               isUser = true;
-              user.id = users[i].id;
+              $rootScope.user = users[i];
+              console.log($rootScope.user);
+              continue;
             }
           }
           if (isUser) {
-            $window.localStorage.setItem('com.boorish', user.id);
             $location.path('/questions');
           } else {
-            $location.path('/signin');
+            $location.path('/auth/google');
           }
         })
       });
   },
 
   isAuth: function () {
-    return !!$window.localStorage.getItem('com.boorish');
+    return !!$rootScope.user;
   },
 
   signout: function () {
-    $window.localStorage.removeItem('com.boorish');
+    $rootScope.user = undefined;
     $location.path('/signin');
   }
 }
