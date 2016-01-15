@@ -38,23 +38,36 @@ passport.deserializeUser(function(obj, done) {
 });
 
 // When user logged in does a get req to auth/google/callback
+var extend = function(obj1, obj2) {
+  for (var key in obj2) {
+    obj1[key] = obj2[key];
+  }
+}
+
 passport.use(new GoogleStrategy({
   clientID: apikeys.googleOauth.clientID,
   clientSecret: apikeys.googleOauth.clientSecret,
    callbackURL: "http://127.0.0.1:8001/auth/google/callback"
 },
   function(accessToken, refreshToken, profile, done) {
-    var queryObject = {};
-    queryObject.username = profile.emails[0].value;
-    queryObject.name_last = profile.name.familyName;
-    queryObject.name_first = profile.name.givenName;
-    queryObject.name = queryObject.name_first + " " + queryObject.name_last;
-    queryObject.email = profile.emails[0].value;
-    queryObject.username = queryObject.email;
-    queryObject.picture = profile.photos ? profile.photos[0].value : "";
 
-    User.findOrCreate({where: queryObject}).spread(function(user, created) {
-      return done(null, user);
-    });
+  	console.log('profile', profile); 
+  	var queryObject = {};
+    queryObject.google_id = profile.id; 
+  	queryObject.username = profile.emails[0].value;
+  	queryObject.name_last = profile.name.familyName;
+  	queryObject.name_first = profile.name.givenName;
+  	queryObject.name = queryObject.name_first + " " + queryObject.name_last;
+  	queryObject.email = profile.emails[0].value;
+  	queryObject.username = queryObject.email;
+    queryObject.picture = profile.photos ? profile.photos[0].value : "";
+  	//TODO: not have username === email
+  	User.findOrCreate({where: {google_id: profile.id}}).spread(function(user, created) {
+      // console.log('user', user);
+      // user.updateAttributes(queryObject).success(function() {
+        User.update(queryObject, { where: {google_id: profile.id} });
+    		return done(null, user); 
+      // })
+  	})
   }));
 
