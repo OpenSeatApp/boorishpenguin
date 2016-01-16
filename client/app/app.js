@@ -63,7 +63,9 @@ angular.module('Main', ['ui.router', 'ngMaterial', 'main.controller', 'boorish.q
 
   })
 
+
   .run(function () {
+    console.log('running');
   });
  
 

@@ -4,6 +4,7 @@ angular.module('boorish.auth', [])
   $scope.user = {};
 
   $scope.signin = function () {
+
     Auth.setUser().then(function() {
       $location.path('/questions');
     })

@@ -6,8 +6,12 @@ var dbHost = process.env.DBHOST || 'localhost';
 var dbPass = process.env.DBPASS;
 
 var db = new Sequelize(database, dbUser, dbPass, {
-  host: dbHost,
-  username: dbUser
+
+  host: 'localhost',
+  username: 'root',
+  dialectOptions: {
+    supportBigNumbers: true
+  }
 });
 
 var User = db.define('User', {
@@ -36,7 +40,8 @@ var User = db.define('User', {
     defaultValue: 0
   },
   email: Sequelize.STRING,
-  picture: Sequelize.STRING
+  picture: Sequelize.STRING,
+  google_id: Sequelize.STRING
 }, {
   timestamps: false
 });
