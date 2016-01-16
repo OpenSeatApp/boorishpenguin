@@ -7,6 +7,7 @@ angular.module('boorish.services', [])
     // add a question from /ask
     addQuestion: function(question, $rootScope) {
 
+
       return $http({
         method: 'POST',
         url: '/api/questions',

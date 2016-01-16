@@ -60,7 +60,9 @@ passport.use(new GoogleStrategy({
   	queryObject.name = queryObject.name_first + " " + queryObject.name_last;
   	queryObject.email = profile.emails[0].value;
   	queryObject.username = queryObject.email;
+
     queryObject.picture = profile.photos ? profile.photos[0].value : "";
+
   	//TODO: not have username === email
   	User.findOrCreate({where: {google_id: profile.id}}).spread(function(user, created) {
       // console.log('user', user);

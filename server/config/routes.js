@@ -8,6 +8,7 @@ var voteController = require ('../controllers/voteController.js');
 var adminControllers = require ('../controllers/adminControllers.js');
 var passport = require('passport');
 
+
 module.exports = function(app, express) {
   app.get('/api/admin/', adminControllers.getPendingTeachers);
   app.put('/api/admin/:id', adminControllers.toggleTeacherAccess);
@@ -44,6 +45,7 @@ module.exports = function(app, express) {
   app.get('/api/loggedin', function(req, res) {
    res.send(req.isAuthenticated() ? req.user : '0');
  });
+
 
   // Client does get request to /auth/google on signin
   app.get('/auth/google',
